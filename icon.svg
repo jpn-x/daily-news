@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f18d00"/>
+      <stop offset="100%" style="stop-color:#d47d00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <!-- TV本体 -->
+  <rect x="48" y="96" width="416" height="288" rx="24" fill="white" opacity="0.95"/>
+
+  <!-- 画面 -->
+  <rect x="68" y="116" width="376" height="248" rx="14" fill="#111827"/>
+
+  <!-- ニューステロップバー（画面下部） -->
+  <rect x="68" y="316" width="376" height="48" fill="#f18d00"/>
+
+  <!-- テロップ上の白いライン3本（ニュース映像っぽく） -->
+  <rect x="84" y="140" width="220" height="14" rx="7" fill="white" opacity="0.25"/>
+  <rect x="84" y="164" width="160" height="14" rx="7" fill="white" opacity="0.18"/>
+
+  <!-- 再生ボタン（三角形） -->
+  <polygon points="218,190 218,286 322,238" fill="white" opacity="0.85"/>
+
+  <!-- スタンド -->
+  <rect x="188" y="384" width="136" height="18" rx="9" fill="white" opacity="0.9"/>
+  <rect x="148" y="398" width="216" height="24" rx="12" fill="white" opacity="0.85"/>
+
+  <!-- ニュース文字（テロップバー上） -->
+  <text x="256" y="350" text-anchor="middle"
+    font-family="'Hiragino Sans','Yu Gothic','Meiryo',sans-serif"
+    font-size="30" font-weight="bold" fill="white" letter-spacing="6">
+    ニュース
+  </text>
+</svg>

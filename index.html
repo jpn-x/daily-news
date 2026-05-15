@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>今日のニュース</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="今日のニュース">
+  <meta name="theme-color" content="#f18d00">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:    #f18d00;
+      --orange-dk: #d47d00;
+      --orange-lt: #fff4e0;
+      --bg:        #fdf6ee;
+      --card:      #ffffff;
+      --text:      #333;
+      --sub:       #888;
+      --brown:     #5D4037;
+      --radius:    16px;
+    }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text);
+    }
+
+    /* ========== ヘッダー ========== */
+    .header {
+      background: var(--orange);
+      padding: 14px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-title {
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: white;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-shuffle-top {
+      background: white;
+      color: var(--orange-dk);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-shuffle-top:active { opacity: 0.7; }
+
+    /* ========== チャンネル名バー ========== */
+    .channel-bar {
+      background: var(--orange-lt);
+      border-bottom: 4px solid var(--orange);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .channel-emoji {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .channel-texts {
+      flex: 1;
+    }
+
+    .channel-label {
+      font-size: 0.9rem;
+      color: var(--sub);
+      margin-bottom: 3px;
+    }
+
+    .channel-name {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--brown);
+      line-height: 1.2;
+    }
+
+    /* ========== 動画エリア ========== */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      background: #111;
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* 再生できない時のオーバーレイ */
+    .video-fallback {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: #1a1a1a;
+      color: white;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      gap: 18px;
+    }
+    .video-fallback.show { display: flex; }
+    .video-fallback .icon { font-size: 3rem; }
+    .video-fallback p { font-size: 1.2rem; line-height: 1.6; }
+
+    /* ========== ボタンエリア ========== */
+    .controls {
+      padding: 18px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 22px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.45rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+    .btn:active { opacity: 0.72; }
+
+    .btn-shuffle {
+      background: var(--orange);
+      color: white;
+    }
+
+    .btn-open {
+      background: #c62828;
+      color: white;
+    }
+
+    /* ========== チャンネル選択リスト ========== */
+    .section-title {
+      padding: 4px 18px 10px;
+      font-size: 1rem;
+      color: var(--sub);
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    .ch-list {
+      padding: 0 16px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ch-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card);
+      border: 3px solid #FFCC80;
+      border-radius: 14px;
+      padding: 16px 18px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--brown);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.1s, border-color 0.1s;
+    }
+
+    .ch-btn .ch-emoji { font-size: 1.6rem; }
+
+    .ch-btn.active {
+      background: var(--orange-lt);
+      border-color: var(--orange);
+      color: var(--orange-dk);
+    }
+
+    .ch-btn:active { opacity: 0.72; }
+
+    /* ========== フッター ========== */
+    .footer {
+      text-align: center;
+      padding: 14px 16px 24px;
+      color: #BCAAA4;
+      font-size: 0.9rem;
+      border-top: 1px solid #FFE0B2;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-title">📺 今日のニュース</div>
+    <button class="btn-shuffle-top" onclick="shuffleChannel()">🎲 次へ</button>
+  </div>
+
+  <!-- いま見ているチャンネル表示 -->
+  <div class="channel-bar">
+    <div class="channel-emoji" id="chEmoji">⏳</div>
+    <div class="channel-texts">
+      <div class="channel-label">いま見ているチャンネル</div>
+      <div class="channel-name" id="chName">読み込み中…</div>
+    </div>
+  </div>
+
+  <!-- 動画 -->
+  <div class="video-wrap">
+    <iframe id="ytFrame"
+      src="about:blank"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+    <!-- 再生できない時 -->
+    <div class="video-fallback" id="ytFallback">
+      <div class="icon">😢</div>
+      <p>このチャンネルは<br>うまく再生できませんでした</p>
+      <button class="btn btn-shuffle" style="margin-top:4px;max-width:280px" onclick="shuffleChannel()">
+        🎲 別のを見る
+      </button>
+    </div>
+  </div>
+
+  <!-- ボタン -->
+  <div class="controls">
+    <button class="btn btn-shuffle" onclick="shuffleChannel()">
+      🎲 別のニュースを見る
+    </button>
+    <a class="btn btn-open" id="ytOpenBtn" href="#" target="_blank" rel="noopener noreferrer">
+      ▶ YouTubeアプリで開く
+    </a>
+  </div>
+
+  <!-- チャンネル選択 -->
+  <div class="section-title">▼ チャンネルを選んで見る</div>
+  <div class="ch-list" id="chList"></div>
+
+  <div class="footer">ページを開くたびにランダムで始まるよ 🎉</div>
+
+  <script>
+    // ===== チャンネル一覧 =====
+    // playlistId: YouTube チャンネルの「すべての動画」プレイリスト
+    //   ※ チャンネルIDの先頭 "UC" を "UU" に変えたもの
+    // url: YouTube のチャンネルページ or プレイリストページ
+    const channels = [
+      {
+        name: 'NHK ニュース',
+        emoji: '🔵',
+        playlistId: 'UUqKZH8mOdArc5N_gEMhlSIg',
+        url: 'https://www.youtube.com/@nhknewsweb/videos'
+      },
+      {
+        name: 'TBS NEWS DIG',
+        emoji: '🔴',
+        playlistId: 'UU6D3SqJkFnMdlcaL3gFvBxQ',
+        url: 'https://www.youtube.com/@tbsnewsdig/videos'
+      },
+      {
+        name: 'テレ朝 ANNニュース',
+        emoji: '🟡',
+        playlistId: 'UUqA4CzLiLNBMDaAFOkm-BkQ',
+        url: 'https://www.youtube.com/@ANNnewsCH/videos'
+      },
+      {
+        name: 'FNN プライムオンライン',
+        emoji: '🟠',
+        playlistId: 'UUuTAXTexrhetksOUFMlJl8A',
+        url: 'https://www.youtube.com/@FNNnewsCH/videos'
+      },
+      {
+        name: '日テレ NEWS',
+        emoji: '🟢',
+        playlistId: 'UU5bUK-HkzZXh0sAgFi9BFJA',
+        url: 'https://www.youtube.com/@ntv_news/videos'
+      },
+      {
+        name: 'テレ東 BIZ',
+        emoji: '🟣',
+        playlistId: 'UULEoDMqoJ86jM-LSPZ_6A5A',
+        url: 'https://www.youtube.com/@tvtokyobiz/videos'
+      }
+    ];
+
+    let currentIndex = -1;
+
+    // チャンネル一覧ボタンを生成
+    function buildList() {
+      const list = document.getElementById('chList');
+      channels.forEach((ch, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'ch-btn';
+        btn.id = 'ch-' + i;
+        btn.innerHTML = `<span class="ch-emoji">${ch.emoji}</span><span>${ch.name}</span>`;
+        btn.addEventListener('click', () => loadChannel(i));
+        list.appendChild(btn);
+      });
+    }
+
+    function loadChannel(index) {
+      // アクティブ状態を更新
+      document.querySelectorAll('.ch-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+
+      currentIndex = index;
+      const ch = channels[index];
+
+      document.getElementById('chEmoji').textContent = ch.emoji;
+      document.getElementById('chName').textContent = ch.name;
+      document.getElementById('ytOpenBtn').href = ch.url;
+      document.getElementById('ytFallback').classList.remove('show');
+
+      // プレイリスト埋め込み（最新動画から再生）
+      const src =
+        'https://www.youtube.com/embed/videoseries' +
+        '?list=' + ch.playlistId +
+        '&autoplay=1&rel=0&hl=ja&modestbranding=1';
+      document.getElementById('ytFrame').src = src;
+    }
+
+    function shuffleChannel() {
+      let next;
+      if (channels.length === 1) { next = 0; }
+      else {
+        do { next = Math.floor(Math.random() * channels.length); }
+        while (next === currentIndex);
+      }
+      loadChannel(next);
+
+      // ページトップへスクロール（動画が見えるように）
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    buildList();
+    shuffleChannel(); // ランダムで開始
+  </script>
+</body>
+</html>
