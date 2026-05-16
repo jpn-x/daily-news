@@ -47,30 +47,31 @@
       padding: 10px 14px 8px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
 
     .header-title {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: bold;
       color: white;
       letter-spacing: 0.04em;
+      flex: 1;
     }
 
-    .btn-next {
+    /* ヘッダーのボタン（閉じる・次のチャンネル 共通） */
+    .btn-header {
       background: white;
       color: var(--orange-dk);
       border: none;
       border-radius: 12px;
-      padding: 11px 18px;
-      font-size: 1.05rem;
+      padding: 11px 16px;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .btn-next:active { opacity: 0.65; }
+    .btn-header:active { opacity: 0.65; }
 
     /* ========== チャンネル名バー ========== */
     .channel-bar {
@@ -84,10 +85,9 @@
     }
 
     .ch-emoji { font-size: 1.8rem; flex-shrink: 0; }
-
     .ch-texts { flex: 1; }
     .ch-label { font-size: 0.85rem; color: var(--sub); margin-bottom: 2px; }
-    .ch-name  { font-size: 1.4rem; font-weight: bold; color: var(--brown); }
+    .ch-name  { font-size: 1.4rem; font-weight: bold; color: var(--brown); line-height: 1.2; }
 
     /* ========== 動画エリア ========== */
     .video-area {
@@ -103,9 +103,10 @@
       width: 100%;
       height: 100%;
       border: none;
+      transition: opacity 0.3s;
     }
 
-    /* ローディング表示 */
+    /* ローディング */
     .loading {
       position: absolute;
       inset: 0;
@@ -117,6 +118,7 @@
       color: white;
       gap: 16px;
       font-size: 1.1rem;
+      z-index: 10;
     }
 
     .spinner {
@@ -130,53 +132,13 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ========== 下部ボタン ========== */
-    .bottom-bar {
-      flex-shrink: 0;
-      padding: 10px 14px;
-      display: flex;
-      gap: 10px;
-      background: var(--bg);
-      border-top: 2px solid var(--orange-lt);
-    }
-
-    .btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 18px 12px;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 1.25rem;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity 0.12s;
-    }
-    .btn:active { opacity: 0.72; }
-
-    .btn-shuffle {
-      background: var(--orange);
-      color: white;
-    }
-
-    .btn-open {
-      background: #c62828;
-      color: white;
-      flex: 0 0 auto;
-      padding: 18px 16px;
-      font-size: 1rem;
-    }
-
     /* ========== チャンネルタブ（横スクロール） ========== */
     .ch-tabs {
       flex-shrink: 0;
       display: flex;
       overflow-x: auto;
       gap: 8px;
-      padding: 0 14px 10px;
+      padding: 10px 14px 8px;
       background: var(--bg);
       scrollbar-width: none;
     }
@@ -196,7 +158,6 @@
       color: var(--brown);
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.1s, border-color 0.1s;
     }
 
     .ch-tab.active {
@@ -205,6 +166,68 @@
       color: var(--orange-dk);
     }
     .ch-tab:active { opacity: 0.72; }
+
+    /* ========== ランダム動画ボタン ========== */
+    .random-bar {
+      flex-shrink: 0;
+      padding: 0 14px 10px;
+      background: var(--bg);
+    }
+
+    .btn-random {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 18px 12px;
+      background: #5c6bc0;   /* 区別しやすい青紫 */
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.12s;
+    }
+    .btn-random:active { opacity: 0.72; }
+    .btn-random:disabled { opacity: 0.55; cursor: default; }
+
+    /* ========== 下部ボタン ========== */
+    .bottom-bar {
+      flex-shrink: 0;
+      padding: 0 14px 12px;
+      display: flex;
+      gap: 10px;
+      background: var(--bg);
+    }
+
+    .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 12px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+    .btn:active { opacity: 0.72; }
+
+    .btn-shuffle { background: var(--orange); color: white; }
+
+    .btn-open {
+      background: #c62828;
+      color: white;
+      flex: 0 0 auto;
+      padding: 16px 18px;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -213,14 +236,15 @@
   <!-- ヘッダー -->
   <div class="header">
     <div class="header-title">📺 今日のニュース</div>
-    <button class="btn-next" onclick="shuffleChannel()">🎲 次のチャンネル</button>
+    <button class="btn-header" onclick="closeApp()">✕ 閉じる</button>
+    <button class="btn-header" onclick="shuffleChannel()">🎲 次のチャンネル</button>
   </div>
 
   <!-- いま見ているチャンネル -->
   <div class="channel-bar">
     <div class="ch-emoji" id="chEmoji">⏳</div>
     <div class="ch-texts">
-      <div class="ch-label">いま見ているチャンネル</div>
+      <div class="ch-label" id="chLabel">いま見ているチャンネル</div>
       <div class="ch-name" id="chName">読み込み中…</div>
     </div>
   </div>
@@ -229,7 +253,7 @@
   <div class="video-area">
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <div>動画を読み込んでいます…</div>
+      <div id="loadingMsg">動画を読み込んでいます…</div>
     </div>
     <iframe id="ytFrame"
       src="about:blank"
@@ -240,6 +264,13 @@
 
   <!-- チャンネルタブ -->
   <div class="ch-tabs" id="chTabs"></div>
+
+  <!-- ランダム動画ボタン -->
+  <div class="random-bar">
+    <button class="btn-random" id="btnRandom" onclick="randomVideo()">
+      🎰 ランダムでニュースを見る
+    </button>
+  </div>
 
   <!-- 下部ボタン -->
   <div class="bottom-bar">
@@ -258,21 +289,21 @@
     {
       name: 'TBS NEWS DIG',
       emoji: '🔴',
-      // channel: UCeCmAYh1ylwIsgGrmqaklzg → uploads playlist UU...
+      channelId: 'UCeCmAYh1ylwIsgGrmqaklzg',
       playlistId: 'UUeCmAYh1ylwIsgGrmqaklzg',
       url: 'https://www.youtube.com/@tbsnewsdig/videos'
     },
     {
       name: 'FNN プライムオンライン',
       emoji: '🟠',
-      // channel: UC1ipzc08F-FjrZ5jIaZVPIw
+      channelId: 'UC1ipzc08F-FjrZ5jIaZVPIw',
       playlistId: 'UU1ipzc08F-FjrZ5jIaZVPIw',
       url: 'https://www.youtube.com/@FNNnewsCH/videos'
     },
     {
       name: '日テレ NEWS',
       emoji: '🟢',
-      // channel: UCWt0yfrBaUk148rxaOp4b4w
+      channelId: 'UCWt0yfrBaUk148rxaOp4b4w',
       playlistId: 'UUWt0yfrBaUk148rxaOp4b4w',
       url: 'https://www.youtube.com/@ntv_news/videos'
     }
@@ -280,6 +311,7 @@
 
   let currentIndex = -1;
 
+  // ===== タブ生成 =====
   function buildTabs() {
     const tabs = document.getElementById('chTabs');
     channels.forEach((ch, i) => {
@@ -292,37 +324,19 @@
     });
   }
 
-  function loadChannel(index) {
-    document.querySelectorAll('.ch-tab').forEach((b, i) => {
-      b.classList.toggle('active', i === index);
-    });
-
-    currentIndex = index;
-    const ch = channels[index];
-
-    document.getElementById('chEmoji').textContent = ch.emoji;
-    document.getElementById('chName').textContent  = ch.name;
-    document.getElementById('ytOpenBtn').href = ch.url;
-
-    // ローディング表示
+  // ===== iframe セット共通 =====
+  function setIframe(src, label) {
     document.getElementById('loading').style.display = 'flex';
-    document.getElementById('ytFrame').style.opacity = '0';
-
-    const src = 'https://www.youtube.com/embed/videoseries' +
-      '?list=' + ch.playlistId +
-      '&autoplay=1&rel=0&hl=ja&modestbranding=1';
-
+    document.getElementById('loadingMsg').textContent = label || '動画を読み込んでいます…';
     const frame = document.getElementById('ytFrame');
+    frame.style.opacity = '0';
     frame.src = 'about:blank';
-    // 少し待ってからセット（リセット確実に）
     setTimeout(() => {
       frame.src = src;
-      // ロード完了後にフェードイン
       frame.onload = () => {
         document.getElementById('loading').style.display = 'none';
         frame.style.opacity = '1';
       };
-      // 8秒でタイムアウト（onloadが来ない場合）
       setTimeout(() => {
         document.getElementById('loading').style.display = 'none';
         frame.style.opacity = '1';
@@ -330,14 +344,91 @@
     }, 100);
   }
 
+  // ===== チャンネルプレイリストを読み込む =====
+  function loadChannel(index) {
+    document.querySelectorAll('.ch-tab').forEach((b, i) => b.classList.toggle('active', i === index));
+    currentIndex = index;
+    const ch = channels[index];
+
+    document.getElementById('chEmoji').textContent = ch.emoji;
+    document.getElementById('chLabel').textContent = 'いま見ているチャンネル';
+    document.getElementById('chName').textContent  = ch.name;
+    document.getElementById('ytOpenBtn').href = ch.url;
+
+    const src = 'https://www.youtube.com/embed/videoseries'
+      + '?list=' + ch.playlistId
+      + '&autoplay=1&rel=0&hl=ja&modestbranding=1';
+    setIframe(src, 'チャンネルを読み込んでいます…');
+  }
+
+  // ===== 次のチャンネル（プレイリスト切り替え）=====
   function shuffleChannel() {
     let next;
     if (channels.length === 1) { next = 0; }
-    else {
-      do { next = Math.floor(Math.random() * channels.length); }
-      while (next === currentIndex);
-    }
+    else { do { next = Math.floor(Math.random() * channels.length); } while (next === currentIndex); }
     loadChannel(next);
+  }
+
+  // ===== 🎰 ランダム動画（RSSから個別ビデオIDを取得）=====
+  async function randomVideo() {
+    const btn = document.getElementById('btnRandom');
+    btn.disabled = true;
+    btn.textContent = '⏳ 探しています…';
+
+    // タブのアクティブを外す（ランダム選択中なので）
+    document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
+
+    try {
+      // ランダムにチャンネルを選ぶ（前回と別チャンネルでなくてOK）
+      const ch = channels[Math.floor(Math.random() * channels.length)];
+
+      // YouTube RSS → CORS プロキシ経由で取得
+      const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.channelId;
+      const proxy  = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+
+      const resp = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
+      const data = await resp.json();
+
+      const parser  = new DOMParser();
+      const xml     = parser.parseFromString(data.contents, 'text/xml');
+      const entries = [...xml.querySelectorAll('entry')];
+
+      if (!entries.length) throw new Error('no entries');
+
+      // 最新15本の中からランダムに1本選ぶ
+      const pool  = entries.slice(0, 15);
+      const entry = pool[Math.floor(Math.random() * pool.length)];
+      const link  = entry.querySelector('link[rel="alternate"]');
+      const href  = link?.getAttribute('href') || '';
+      const match = href.match(/[?&]v=([^&]+)/);
+      if (!match) throw new Error('no videoId');
+
+      const videoId = match[1];
+      const title   = entry.querySelector('title')?.textContent || ch.name;
+
+      // UI更新
+      document.getElementById('chEmoji').textContent = ch.emoji;
+      document.getElementById('chLabel').textContent = '🎰 ランダム選択 — ' + ch.name;
+      document.getElementById('chName').textContent  = title;
+      document.getElementById('ytOpenBtn').href = 'https://www.youtube.com/watch?v=' + videoId;
+
+      const src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&hl=ja';
+      setIframe(src, '動画を読み込んでいます…');
+
+    } catch (e) {
+      // 取得失敗時はプレイリストにフォールバック
+      shuffleChannel();
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '🎰 ランダムでニュースを見る';
+    }
+  }
+
+  // ===== 閉じる =====
+  function closeApp() {
+    // PWA standalone / ブラウザ両対応
+    if (window.history.length > 1) { window.history.back(); }
+    window.close();
   }
 
   buildTabs();
