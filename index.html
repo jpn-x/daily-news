@@ -23,7 +23,7 @@
       --text:      #333;
       --sub:       #888;
       --brown:     #5D4037;
-      --radius:    16px;
+      --radius:    14px;
     }
 
     html, body {
@@ -37,35 +37,31 @@
     #app {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      height: 100dvh; /* dynamic viewport height：アドレスバー考慮 */
     }
 
-    /* ========== ヘッダー ========== */
+    /* ===== ヘッダー ===== */
     .header {
       flex-shrink: 0;
       background: var(--orange);
-      padding: 10px 14px 8px;
+      padding: 8px 12px 7px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
     .header-title {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: bold;
       color: white;
-      letter-spacing: 0.04em;
       flex: 1;
     }
-
-    /* ヘッダーのボタン（閉じる・次のチャンネル 共通） */
     .btn-header {
       background: white;
       color: var(--orange-dk);
       border: none;
-      border-radius: 12px;
-      padding: 11px 16px;
-      font-size: 1rem;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
       white-space: nowrap;
@@ -73,30 +69,32 @@
     }
     .btn-header:active { opacity: 0.65; }
 
-    /* ========== チャンネル名バー ========== */
+    /* ===== チャンネル名バー ===== */
     .channel-bar {
       flex-shrink: 0;
       background: var(--orange-lt);
-      border-bottom: 4px solid var(--orange);
-      padding: 10px 16px;
+      border-bottom: 3px solid var(--orange);
+      padding: 7px 14px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+    }
+    .ch-emoji { font-size: 1.5rem; flex-shrink: 0; }
+    .ch-texts { flex: 1; min-width: 0; }
+    .ch-label { font-size: 0.78rem; color: var(--sub); margin-bottom: 1px; }
+    .ch-name  {
+      font-size: 1.15rem; font-weight: bold; color: var(--brown);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .ch-emoji { font-size: 1.8rem; flex-shrink: 0; }
-    .ch-texts { flex: 1; }
-    .ch-label { font-size: 0.85rem; color: var(--sub); margin-bottom: 2px; }
-    .ch-name  { font-size: 1.4rem; font-weight: bold; color: var(--brown); line-height: 1.2; }
-
-    /* ========== 動画エリア ========== */
+    /* ===== 動画エリア（残りを全部使う）===== */
     .video-area {
       flex: 1;
       position: relative;
       background: #111;
       overflow: hidden;
+      min-height: 0;
     }
-
     .video-area iframe {
       position: absolute;
       inset: 0;
@@ -105,8 +103,6 @@
       border: none;
       transition: opacity 0.3s;
     }
-
-    /* ローディング */
     .loading {
       position: absolute;
       inset: 0;
@@ -116,50 +112,45 @@
       justify-content: center;
       background: #111;
       color: white;
-      gap: 16px;
-      font-size: 1.1rem;
+      gap: 14px;
+      font-size: 1rem;
       z-index: 10;
     }
-
     .spinner {
-      width: 48px;
-      height: 48px;
-      border: 5px solid rgba(255,255,255,0.2);
+      width: 44px; height: 44px;
+      border: 4px solid rgba(255,255,255,0.2);
       border-top-color: var(--orange);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ========== チャンネルタブ（横スクロール） ========== */
+    /* ===== チャンネルタブ ===== */
     .ch-tabs {
       flex-shrink: 0;
       display: flex;
       overflow-x: auto;
-      gap: 8px;
-      padding: 10px 14px 8px;
+      gap: 7px;
+      padding: 7px 12px 6px;
       background: var(--bg);
       scrollbar-width: none;
     }
     .ch-tabs::-webkit-scrollbar { display: none; }
-
     .ch-tab {
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 16px;
+      gap: 5px;
+      padding: 8px 14px;
       background: var(--card);
       border: 2px solid #FFCC80;
       border-radius: 999px;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: bold;
       color: var(--brown);
       cursor: pointer;
       white-space: nowrap;
     }
-
     .ch-tab.active {
       background: var(--orange-lt);
       border-color: var(--orange);
@@ -167,111 +158,95 @@
     }
     .ch-tab:active { opacity: 0.72; }
 
-    /* ========== ランダム動画ボタン ========== */
+    /* ===== ランダム動画ボタン ===== */
     .random-bar {
       flex-shrink: 0;
-      padding: 0 14px 10px;
+      padding: 0 12px 6px;
       background: var(--bg);
     }
-
     .btn-random {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      padding: 18px 12px;
-      background: #5c6bc0;   /* 区別しやすい青紫 */
+      padding: 13px 12px;
+      background: #5c6bc0;
       color: white;
       border: none;
       border-radius: var(--radius);
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: bold;
       cursor: pointer;
-      transition: opacity 0.12s;
     }
     .btn-random:active { opacity: 0.72; }
     .btn-random:disabled { opacity: 0.55; cursor: default; }
 
-    /* ========== 下部ボタン ========== */
+    /* ===== 下部ボタン ===== */
     .bottom-bar {
       flex-shrink: 0;
-      padding: 0 14px 12px;
+      padding: 0 12px 8px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       background: var(--bg);
     }
-
     .btn {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 16px 12px;
+      gap: 6px;
+      padding: 13px 8px;
       border: none;
       border-radius: var(--radius);
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
-      text-decoration: none;
       transition: opacity 0.12s;
     }
     .btn:active { opacity: 0.72; }
-
     .btn-shuffle { background: var(--orange); color: white; }
-
-    .btn-ehime {
-      background: #2e7d32;
-      color: white;
-    }
+    .btn-ehime  { background: #2e7d32; color: white; }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ヘッダー -->
   <div class="header">
     <div class="header-title">📺 今日のニュース</div>
     <button class="btn-header" onclick="location.reload()">🔄 最初に戻る</button>
   </div>
 
-  <!-- いま見ているチャンネル -->
   <div class="channel-bar">
     <div class="ch-emoji" id="chEmoji">⏳</div>
     <div class="ch-texts">
       <div class="ch-label" id="chLabel">いま見ているチャンネル</div>
-      <div class="ch-name" id="chName">読み込み中…</div>
+      <div class="ch-name"  id="chName">読み込み中…</div>
     </div>
   </div>
 
-  <!-- 動画 -->
   <div class="video-area">
     <div class="loading" id="loading">
       <div class="spinner"></div>
       <div id="loadingMsg">動画を読み込んでいます…</div>
     </div>
-    <iframe id="ytFrame"
-      src="about:blank"
+    <iframe id="ytFrame" src="about:blank"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen>
     </iframe>
   </div>
 
-  <!-- チャンネルタブ -->
   <div class="ch-tabs" id="chTabs"></div>
 
-  <!-- ランダム動画ボタン -->
   <div class="random-bar">
     <button class="btn-random" id="btnRandom" onclick="randomVideo()">
       🎰 ランダムでニュースを見る
     </button>
   </div>
 
-  <!-- 下部ボタン -->
   <div class="bottom-bar">
     <button class="btn btn-shuffle" onclick="shuffleChannel()">
-      🎲 別のニュースを見る
+      🔁 上の３つを切り替える
     </button>
     <button class="btn btn-ehime" onclick="ehimeNews()">
       🍊 愛媛のニュース
@@ -280,47 +255,32 @@
 
 </div>
 <script>
-  // ===== チャンネル定義（oEmbed で埋め込み確認済み）=====
   const channels = [
-    {
-      name: 'TBS NEWS DIG',
-      emoji: '🔴',
-      channelId: 'UCeCmAYh1ylwIsgGrmqaklzg',
-      playlistId: 'UUeCmAYh1ylwIsgGrmqaklzg',
-      url: 'https://www.youtube.com/@tbsnewsdig/videos'
-    },
-    {
-      name: 'FNN プライムオンライン',
-      emoji: '🟠',
-      channelId: 'UC1ipzc08F-FjrZ5jIaZVPIw',
-      playlistId: 'UU1ipzc08F-FjrZ5jIaZVPIw',
-      url: 'https://www.youtube.com/@FNNnewsCH/videos'
-    },
-    {
-      name: '日テレ NEWS',
-      emoji: '🟢',
-      channelId: 'UCWt0yfrBaUk148rxaOp4b4w',
-      playlistId: 'UUWt0yfrBaUk148rxaOp4b4w',
-      url: 'https://www.youtube.com/@ntv_news/videos'
-    }
+    { name:'TBS NEWS DIG',       emoji:'🔴', channelId:'UCeCmAYh1ylwIsgGrmqaklzg', playlistId:'UUeCmAYh1ylwIsgGrmqaklzg' },
+    { name:'FNN プライムオンライン', emoji:'🟠', channelId:'UC1ipzc08F-FjrZ5jIaZVPIw',  playlistId:'UU1ipzc08F-FjrZ5jIaZVPIw'  },
+    { name:'日テレ NEWS',          emoji:'🟢', channelId:'UCWt0yfrBaUk148rxaOp4b4w', playlistId:'UUWt0yfrBaUk148rxaOp4b4w' }
   ];
+
+  const EHIME_CH = {
+    name:'テレビ愛媛', emoji:'🍊',
+    channelId:'UCISf7aH1HqBtTD9jPgzIfVA', playlistId:'UUISf7aH1HqBtTD9jPgzIfVA'
+  };
 
   let currentIndex = -1;
 
-  // ===== タブ生成 =====
+  // タブ生成
   function buildTabs() {
-    const tabs = document.getElementById('chTabs');
     channels.forEach((ch, i) => {
       const btn = document.createElement('button');
       btn.className = 'ch-tab';
       btn.id = 'tab-' + i;
       btn.innerHTML = `<span>${ch.emoji}</span><span>${ch.name}</span>`;
       btn.addEventListener('click', () => loadChannel(i));
-      tabs.appendChild(btn);
+      document.getElementById('chTabs').appendChild(btn);
     });
   }
 
-  // ===== iframe セット共通 =====
+  // iframe セット
   function setIframe(src, label) {
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('loadingMsg').textContent = label || '動画を読み込んでいます…';
@@ -340,137 +300,110 @@
     }, 100);
   }
 
-  // ===== チャンネルプレイリストを読み込む =====
+  // チャンネルプレイリスト読み込み
   function loadChannel(index) {
     document.querySelectorAll('.ch-tab').forEach((b, i) => b.classList.toggle('active', i === index));
     currentIndex = index;
     const ch = channels[index];
-
     document.getElementById('chEmoji').textContent = ch.emoji;
     document.getElementById('chLabel').textContent = 'いま見ているチャンネル';
     document.getElementById('chName').textContent  = ch.name;
-
-    const src = 'https://www.youtube.com/embed/videoseries'
-      + '?list=' + ch.playlistId
-      + '&autoplay=1&rel=0&hl=ja&modestbranding=1';
-    setIframe(src, 'チャンネルを読み込んでいます…');
+    setIframe(
+      'https://www.youtube.com/embed/videoseries?list=' + ch.playlistId + '&autoplay=1&rel=0&hl=ja',
+      'チャンネルを読み込んでいます…'
+    );
   }
 
-  // ===== 次のチャンネル（プレイリスト切り替え）=====
+  // 上の３つを切り替える
   function shuffleChannel() {
     let next;
-    if (channels.length === 1) { next = 0; }
-    else { do { next = Math.floor(Math.random() * channels.length); } while (next === currentIndex); }
+    do { next = Math.floor(Math.random() * channels.length); } while (next === currentIndex && channels.length > 1);
     loadChannel(next);
   }
 
-  // ===== 🎰 ランダム動画（RSSから個別ビデオIDを取得）=====
+  // RSS取得（プロキシ2段階フォールバック）
+  async function fetchRSS(channelId) {
+    const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + channelId;
+    // 1st: allorigins.win
+    try {
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl),
+        { signal: AbortSignal.timeout(8000) });
+      const d = await r.json();
+      if (d.contents && d.contents.includes('<entry>')) return d.contents;
+    } catch {}
+    // 2nd: corsproxy.io
+    try {
+      const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(rssUrl),
+        { signal: AbortSignal.timeout(8000) });
+      const t = await r.text();
+      if (t.includes('<entry>')) return t;
+    } catch {}
+    throw new Error('RSS取得失敗');
+  }
+
+  // RSSからランダム動画IDを取得してセット
+  async function loadRandomFromChannel(ch, labelPrefix) {
+    const xml     = new DOMParser().parseFromString(await fetchRSS(ch.channelId), 'text/xml');
+    const entries = [...xml.querySelectorAll('entry')];
+    if (!entries.length) throw new Error('no entries');
+    const entry   = entries.slice(0, 15)[Math.floor(Math.random() * Math.min(15, entries.length))];
+    const href    = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
+    const match   = href.match(/[?&]v=([^&]+)/);
+    if (!match) throw new Error('no videoId');
+    const title   = entry.querySelector('title')?.textContent || ch.name;
+    document.getElementById('chEmoji').textContent = ch.emoji;
+    document.getElementById('chLabel').textContent = labelPrefix + ch.name;
+    document.getElementById('chName').textContent  = title;
+    setIframe('https://www.youtube.com/embed/' + match[1] + '?autoplay=1&rel=0&hl=ja', '動画を読み込んでいます…');
+  }
+
+  // 🎰 ランダムでニュースを見る
   async function randomVideo() {
     const btn = document.getElementById('btnRandom');
     btn.disabled = true;
     btn.textContent = '⏳ 探しています…';
-
-    // タブのアクティブを外す（ランダム選択中なので）
     document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
-
+    const ch = channels[Math.floor(Math.random() * channels.length)];
     try {
-      // ランダムにチャンネルを選ぶ（前回と別チャンネルでなくてOK）
-      const ch = channels[Math.floor(Math.random() * channels.length)];
-
-      // YouTube RSS → CORS プロキシ経由で取得
-      const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.channelId;
-      const proxy  = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
-
-      const resp = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
-      const data = await resp.json();
-
-      const parser  = new DOMParser();
-      const xml     = parser.parseFromString(data.contents, 'text/xml');
-      const entries = [...xml.querySelectorAll('entry')];
-
-      if (!entries.length) throw new Error('no entries');
-
-      // 最新15本の中からランダムに1本選ぶ
-      const pool  = entries.slice(0, 15);
-      const entry = pool[Math.floor(Math.random() * pool.length)];
-      const link  = entry.querySelector('link[rel="alternate"]');
-      const href  = link?.getAttribute('href') || '';
-      const match = href.match(/[?&]v=([^&]+)/);
-      if (!match) throw new Error('no videoId');
-
-      const videoId = match[1];
-      const title   = entry.querySelector('title')?.textContent || ch.name;
-
-      // UI更新
+      await loadRandomFromChannel(ch, '🎰 ランダム — ');
+    } catch {
+      // プロキシが全滅したらプレイリスト再生にフォールバック
       document.getElementById('chEmoji').textContent = ch.emoji;
-      document.getElementById('chLabel').textContent = '🎰 ランダム選択 — ' + ch.name;
-      document.getElementById('chName').textContent  = title;
-      document.getElementById('ytOpenBtn').href = 'https://www.youtube.com/watch?v=' + videoId;
-
-      const src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&hl=ja';
-      setIframe(src, '動画を読み込んでいます…');
-
-    } catch (e) {
-      // 取得失敗時はプレイリストにフォールバック
-      shuffleChannel();
+      document.getElementById('chLabel').textContent = 'いま見ているチャンネル';
+      document.getElementById('chName').textContent  = ch.name;
+      setIframe(
+        'https://www.youtube.com/embed/videoseries?list=' + ch.playlistId + '&autoplay=1&rel=0&hl=ja',
+        'チャンネルを読み込んでいます…'
+      );
     } finally {
       btn.disabled = false;
       btn.innerHTML = '🎰 ランダムでニュースを見る';
     }
   }
 
-  // ===== 🍊 愛媛のニュース =====
-  const EHIME_CH = {
-    name: 'テレビ愛媛',
-    emoji: '🍊',
-    channelId: 'UCISf7aH1HqBtTD9jPgzIfVA',
-    playlistId: 'UUISf7aH1HqBtTD9jPgzIfVA'
-  };
-
+  // 🍊 愛媛のニュース
   async function ehimeNews() {
-    document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
     const btn = document.querySelector('.btn-ehime');
     btn.disabled = true;
     btn.textContent = '⏳ 探しています…';
-
+    document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
     try {
-      const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + EHIME_CH.channelId;
-      const proxy  = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
-      const resp   = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
-      const data   = await resp.json();
-
-      const xml     = new DOMParser().parseFromString(data.contents, 'text/xml');
-      const entries = [...xml.querySelectorAll('entry')];
-      if (!entries.length) throw new Error('no entries');
-
-      const entry = entries.slice(0, 15)[Math.floor(Math.random() * Math.min(15, entries.length))];
-      const href  = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
-      const match = href.match(/[?&]v=([^&]+)/);
-      if (!match) throw new Error('no videoId');
-
-      const videoId = match[1];
-      const title   = entry.querySelector('title')?.textContent || EHIME_CH.name;
-
-      document.getElementById('chEmoji').textContent = EHIME_CH.emoji;
-      document.getElementById('chLabel').textContent = '🍊 愛媛のニュース — ' + EHIME_CH.name;
-      document.getElementById('chName').textContent  = title;
-
-      setIframe('https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&hl=ja', '愛媛のニュースを読み込んでいます…');
-
+      await loadRandomFromChannel(EHIME_CH, '🍊 愛媛 — ');
     } catch {
-      // フォールバック：プレイリスト全体
       document.getElementById('chEmoji').textContent = EHIME_CH.emoji;
-      document.getElementById('chLabel').textContent = '🍊 愛媛のニュース — ' + EHIME_CH.name;
+      document.getElementById('chLabel').textContent = '🍊 愛媛のニュース';
       document.getElementById('chName').textContent  = EHIME_CH.name;
-      setIframe('https://www.youtube.com/embed/videoseries?list=' + EHIME_CH.playlistId + '&autoplay=1&rel=0&hl=ja', '愛媛のニュースを読み込んでいます…');
+      setIframe(
+        'https://www.youtube.com/embed/videoseries?list=' + EHIME_CH.playlistId + '&autoplay=1&rel=0&hl=ja',
+        '愛媛のニュースを読み込んでいます…'
+      );
     } finally {
       btn.disabled = false;
       btn.textContent = '🍊 愛媛のニュース';
     }
   }
 
-  // ===== 戻るボタンで真っ黒になるのを防ぐ =====
-  // history に自分を積んで、戻るを押してもリロードするだけにする
+  // 戻るボタンで真っ黒になるのを防ぐ
   history.pushState(null, '', location.href);
   window.addEventListener('popstate', () => {
     history.pushState(null, '', location.href);
@@ -480,28 +413,22 @@
   buildTabs();
   shuffleChannel();
 
-  // ===== プルトゥリフレッシュ =====
+  // プルトゥリフレッシュ
   (function () {
-    const THRESHOLD = 72; // px：これ以上引っ張ったら更新
+    const THRESHOLD = 72;
     let startY = 0, dragging = false;
-
-    // インジケーターバー
     const bar = document.createElement('div');
     bar.style.cssText =
-      'position:fixed;top:0;left:0;right:0;height:54px;' +
-      'background:#d47d00;color:white;' +
-      'display:flex;align-items:center;justify-content:center;' +
-      'font-size:1.1rem;font-weight:bold;gap:10px;' +
+      'position:fixed;top:0;left:0;right:0;height:50px;background:#d47d00;color:white;' +
+      'display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:bold;gap:10px;' +
       'z-index:999;transform:translateY(-100%);will-change:transform;';
     bar.innerHTML = '<span id="pullArrow">↓</span><span id="pullMsg">引っ張って更新</span>';
     document.body.appendChild(bar);
-
     const arrow = bar.querySelector('#pullArrow');
     const msg   = bar.querySelector('#pullMsg');
 
     document.addEventListener('touchstart', e => {
-      startY   = e.touches[0].clientY;
-      dragging = true;
+      startY = e.touches[0].clientY; dragging = true;
       bar.style.transition = 'none';
     }, { passive: true });
 
@@ -509,31 +436,18 @@
       if (!dragging) return;
       const dy = e.touches[0].clientY - startY;
       if (dy <= 0) { bar.style.transform = 'translateY(-100%)'; return; }
-
-      // バーをドラッグ量に合わせてスライドイン
-      const ratio     = Math.min(dy / THRESHOLD, 1);
-      const translate = (ratio - 1) * 100;
-      bar.style.transform = `translateY(${translate}%)`;
-
-      if (dy >= THRESHOLD) {
-        arrow.textContent = '↺';
-        msg.textContent   = '離して更新！';
-      } else {
-        arrow.textContent = '↓';
-        msg.textContent   = '引っ張って更新';
-      }
+      bar.style.transform = `translateY(${(Math.min(dy / THRESHOLD, 1) - 1) * 100}%)`;
+      arrow.textContent = dy >= THRESHOLD ? '↺' : '↓';
+      msg.textContent   = dy >= THRESHOLD ? '離して更新！' : '引っ張って更新';
     }, { passive: true });
 
     document.addEventListener('touchend', e => {
       if (!dragging) return;
       dragging = false;
       const dy = e.changedTouches[0].clientY - startY;
-
       bar.style.transition = 'transform 0.25s';
-      bar.style.transform  = 'translateY(-100%)';
-
+      bar.style.transform = 'translateY(-100%)';
       if (dy >= THRESHOLD) {
-        // 少し待ってからリロード（バーが戻るアニメを見せる）
         bar.innerHTML = '<span>⏳</span><span>更新しています…</span>';
         bar.style.transform = 'translateY(0)';
         setTimeout(() => location.reload(), 400);
