@@ -234,7 +234,6 @@
   <div class="header">
     <div class="header-title">📺 今日のニュース</div>
     <button class="btn-header" onclick="closeApp()">✕ 閉じる</button>
-    <button class="btn-header" onclick="shuffleChannel()">🎲 次のチャンネル</button>
   </div>
 
   <!-- いま見ているチャンネル -->
@@ -472,9 +471,26 @@
 
   // ===== 閉じる =====
   function closeApp() {
-    // PWA standalone / ブラウザ両対応
-    if (window.history.length > 1) { window.history.back(); }
+    // Chrome・PWA両対応で試みる
+    try { window.open('', '_self').close(); } catch(e) {}
     window.close();
+
+    // 300ms 後もまだ開いていたらホームボタン案内を表示
+    setTimeout(() => {
+      const overlay = document.createElement('div');
+      overlay.style.cssText =
+        'position:fixed;inset:0;background:rgba(0,0,0,0.82);display:flex;' +
+        'align-items:center;justify-content:center;z-index:9999;';
+      overlay.innerHTML =
+        '<div style="background:white;padding:36px 28px;border-radius:24px;' +
+        'text-align:center;font-size:1.4rem;line-height:1.8;max-width:300px;">' +
+        '📱<br><strong>Androidの<br>ホームボタン</strong>を<br>押してください' +
+        '<br><br><button onclick="this.closest(\'div[style]\').remove()" ' +
+        'style="margin-top:8px;padding:14px 32px;font-size:1.1rem;font-weight:bold;' +
+        'background:#f18d00;color:white;border:none;border-radius:12px;cursor:pointer;">' +
+        'もどる</button></div>';
+      document.body.appendChild(overlay);
+    }, 300);
   }
 
   buildTabs();
