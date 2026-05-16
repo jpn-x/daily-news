@@ -221,12 +221,9 @@
 
     .btn-shuffle { background: var(--orange); color: white; }
 
-    .btn-open {
-      background: #c62828;
+    .btn-ehime {
+      background: #2e7d32;
       color: white;
-      flex: 0 0 auto;
-      padding: 16px 18px;
-      font-size: 1rem;
     }
   </style>
 </head>
@@ -277,9 +274,9 @@
     <button class="btn btn-shuffle" onclick="shuffleChannel()">
       🎲 別のニュースを見る
     </button>
-    <a class="btn btn-open" id="ytOpenBtn" href="#" target="_blank" rel="noopener noreferrer">
-      ▶ YT
-    </a>
+    <button class="btn btn-ehime" onclick="ehimeNews()">
+      🍊 愛媛のニュース
+    </button>
   </div>
 
 </div>
@@ -353,7 +350,6 @@
     document.getElementById('chEmoji').textContent = ch.emoji;
     document.getElementById('chLabel').textContent = 'いま見ているチャンネル';
     document.getElementById('chName').textContent  = ch.name;
-    document.getElementById('ytOpenBtn').href = ch.url;
 
     const src = 'https://www.youtube.com/embed/videoseries'
       + '?list=' + ch.playlistId
@@ -421,6 +417,56 @@
     } finally {
       btn.disabled = false;
       btn.innerHTML = '🎰 ランダムでニュースを見る';
+    }
+  }
+
+  // ===== 🍊 愛媛のニュース =====
+  const EHIME_CH = {
+    name: 'テレビ愛媛',
+    emoji: '🍊',
+    channelId: 'UCISf7aH1HqBtTD9jPgzIfVA',
+    playlistId: 'UUISf7aH1HqBtTD9jPgzIfVA'
+  };
+
+  async function ehimeNews() {
+    document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector('.btn-ehime');
+    btn.disabled = true;
+    btn.textContent = '⏳ 探しています…';
+
+    try {
+      const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + EHIME_CH.channelId;
+      const proxy  = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+      const resp   = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
+      const data   = await resp.json();
+
+      const xml     = new DOMParser().parseFromString(data.contents, 'text/xml');
+      const entries = [...xml.querySelectorAll('entry')];
+      if (!entries.length) throw new Error('no entries');
+
+      const entry = entries.slice(0, 15)[Math.floor(Math.random() * Math.min(15, entries.length))];
+      const href  = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
+      const match = href.match(/[?&]v=([^&]+)/);
+      if (!match) throw new Error('no videoId');
+
+      const videoId = match[1];
+      const title   = entry.querySelector('title')?.textContent || EHIME_CH.name;
+
+      document.getElementById('chEmoji').textContent = EHIME_CH.emoji;
+      document.getElementById('chLabel').textContent = '🍊 愛媛のニュース — ' + EHIME_CH.name;
+      document.getElementById('chName').textContent  = title;
+
+      setIframe('https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&hl=ja', '愛媛のニュースを読み込んでいます…');
+
+    } catch {
+      // フォールバック：プレイリスト全体
+      document.getElementById('chEmoji').textContent = EHIME_CH.emoji;
+      document.getElementById('chLabel').textContent = '🍊 愛媛のニュース — ' + EHIME_CH.name;
+      document.getElementById('chName').textContent  = EHIME_CH.name;
+      setIframe('https://www.youtube.com/embed/videoseries?list=' + EHIME_CH.playlistId + '&autoplay=1&rel=0&hl=ja', '愛媛のニュースを読み込んでいます…');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🍊 愛媛のニュース';
     }
   }
 
