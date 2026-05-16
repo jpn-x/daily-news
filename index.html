@@ -37,7 +37,7 @@
     #app {
       display: flex;
       flex-direction: column;
-      height: 100dvh; /* dynamic viewport height：アドレスバー考慮 */
+      height: 100vh; /* JS で上書きされる */
     }
 
     /* ===== ヘッダー ===== */
@@ -409,6 +409,13 @@
     history.pushState(null, '', location.href);
     location.reload();
   });
+
+  // アドレスバー込みの実際の高さに合わせる（Android Chrome 対応）
+  function fixHeight() {
+    document.getElementById('app').style.height = window.innerHeight + 'px';
+  }
+  window.addEventListener('resize', fixHeight);
+  fixHeight();
 
   buildTabs();
   shuffleChannel();
